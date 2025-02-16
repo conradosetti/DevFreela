@@ -1,10 +1,17 @@
 using DevFreela.API.ExceptionHandlers;
 using DevFreela.API.Models;
+using DevFreela.API.Persistence;
 using DevFreela.API.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddDbContext<DevFreelaDbContext>(o => o.UseInMemoryDatabase("DevFreelaDb"));
 // Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DevFreelaCS");
+builder.Services.AddDbContext<DevFreelaDbContext>
+    (o => o.UseSqlServer(connectionString));
+
 
 builder.Services.Configure<FreeLanceTotalCostConfig>(
     builder.Configuration.GetSection("FreeLanceTotalCostConfig"));
@@ -12,6 +19,7 @@ builder.Services.Configure<FreeLanceTotalCostConfig>(
 builder.Services.AddSingleton<IConfigService, ConfigService>();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddProblemDetails();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

@@ -1,26 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DevFreela.API.Entities;
+using DevFreela.API.Models;
+using DevFreela.API.Persistence;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.API.Controllers
 {
     [ApiController]
-    [Route("api/users")]
+    [Route("api/user")]
 
-    public class UsersController : ControllerBase
+    public class UsersController(DevFreelaDbContext context) : ControllerBase
     {
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var user = context.Users
+                .Include(u=>u.UserSkills)
+                .ThenInclude(us=>us.Skill)
+                .FirstOrDefault(u => u.Id == id && !u.IsDeleted);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var model = SingleUserViewModel.FromEntity(user);
+            return Ok(model);
+        }
         // POST api/users
         [HttpPost]
-        public IActionResult PostUser()
+        public IActionResult Post(CreateUserInputModel model)
         {
-            return Ok();
+            var user = model.ToEntity();
+            context.Users.Add(user);
+            context.SaveChanges();
+            return NoContent(); 
+        }
+
+        [HttpPut("{id}/skills")]
+        public IActionResult PutSkill(int id, UserSkillsInputModel model)
+        {
+            var userSkills = model.SkillIds.Select(s=>new UserSkill(id, s)).ToList();
+            context.UserSkills.AddRange(userSkills);
+            context.SaveChanges();
+            return NoContent();
         }
         
-        //POST api/users
+        //PUT api/users
         [HttpPut("profile-picture/{id}")]
-        public IActionResult PutProfilePiscture(IFormFile file)
+        public IActionResult PutProfilePicture(int id, IFormFile file)
         {
-            var description = $"FIle: {file.FileName}, Size: {file.Length}";
+            var description = $"File: {file.FileName}, Size: {file.Length}";
             
-            //Processar a imagem
+            //Process Image
             
             
             return Ok(description);

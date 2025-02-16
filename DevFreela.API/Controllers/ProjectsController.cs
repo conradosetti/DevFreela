@@ -1,49 +1,72 @@
 ﻿using DevFreela.API.Models;
+using DevFreela.API.Persistence;
 using DevFreela.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace DevFreela.API.Controllers
 {
-    [Route("api/projects")]
+    [Route("api/project")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class ProjectsController(DevFreelaDbContext context) : ControllerBase
     {
-        private readonly FreeLanceTotalCostConfig _config;
-        private readonly IConfigService _configService;
-        
-        public ProjectsController(IOptions<FreeLanceTotalCostConfig> options, IConfigService configService)
-        {
-            _config = options.Value;
-            _configService = configService;
-        }
-        
         //GET api/projects?search=crm
         [HttpGet]
-        public IActionResult GetAllProjects(string search = "")
+        public IActionResult GetAllProjects(string search = "", int page = 0, int pageSize = 3)
         {
-            return Ok(_configService.GetValue());
+            var projects = context.Projects
+                .Include(p=>p.Client)
+                .Include(p=>p.FreeLancer)
+                .Include(p => p.Comments)
+                .Where(p=>!p.IsDeleted && 
+                          (search == "" || p.Title.Contains(search) || p.Description.Contains(search)))
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .ToList();
+            
+            var model = projects.Select(ProjectItemViewModel.FromEntity).ToList();
+            
+            return Ok(model);
         }
         //GET api/projects/123
         [HttpGet("{id}")]
-        public IActionResult GetProjectById(int id)
+        public IActionResult GetById(int id)
         {
-            throw new Exception();
-            return Ok();
+            var project = context.Projects
+                .Include(p=>p.Client)
+                .Include(p=>p.FreeLancer)
+                .Include(p => p.Comments)
+                .SingleOrDefault(p => p.Id == id && p.IsDeleted == false);
+            
+            var model = project != null ? ProjectViewModel.FromEntity(project) : null;
+            return Ok(model);
         }
         // POST api/projects
         [HttpPost]
-        public IActionResult PostProject(CreateProjectInputModel model)
+        public IActionResult Post(CreateProjectInputModel model)
         {
-            if(model.Cost < _config.Minimum || model.Cost > _config.Maximum)
-                return BadRequest("Cost is out of bounds");
-            return CreatedAtAction(nameof(GetProjectById), new {id = 1}, model);
+            var project = model.ToEntity();
+            
+            context.Projects.Add(project);
+            context.SaveChanges();
+            
+            
+            return CreatedAtAction(nameof(GetById), new {id = project.Id}, context.Projects.SingleOrDefault(p => p.Id == project.Id));
         }
         
         //PUT api/projects/1234
         [HttpPut("{id}")]
         public IActionResult PutProject(int id, UpdateProjectInputModel model)
         {
+            var project = context.Projects.SingleOrDefault(p => p.Id == id);
+            if (project is null)
+            {
+                return NotFound();
+            }
+            project.Update(model.Title, model.Description, model.Cost);
+            context.Projects.Update(project);
+            context.SaveChanges();
             return NoContent();
         }
         
@@ -51,6 +74,15 @@ namespace DevFreela.API.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteProject(int id)
         {
+            var project = context.Projects.SingleOrDefault(p => p.Id == id);
+            if (project is null)
+            {
+                return NotFound();
+            }
+            project.SetAsDeleted();
+            context.Projects.Update(project);
+            context.SaveChanges();
+            
             return NoContent();
         }
         
@@ -58,6 +90,15 @@ namespace DevFreela.API.Controllers
         [HttpPut("start/{id}")]
         public IActionResult StartProject(int id)
         {
+            var project = context.Projects.SingleOrDefault(p => p.Id == id);
+            if (project is null)
+            {
+                return NotFound();
+            }
+            project.Start();
+            context.Projects.Update(project);
+            context.SaveChanges();
+            
             return NoContent();
         }
         
@@ -65,13 +106,32 @@ namespace DevFreela.API.Controllers
         [HttpPut("complete/{id}")]
         public IActionResult CompleteProject(int id)
         {
+            var project = context.Projects.SingleOrDefault(p => p.Id == id);
+            if (project is null)
+            {
+                return NotFound();
+            }
+            project.Complete();
+            context.Projects.Update(project);
+            context.SaveChanges();
+            
             return NoContent();
         }
         
-        //POST api/projects/comments/1234
-        [HttpPost("comment/{id}")]
-        public IActionResult PostComment(int id, CreateProjectCommentInputModel model)
+        //PUT api/projects/comments/1234
+        [HttpPut("comment/{id}")]
+        public IActionResult PutComment(int id, CreateProjectCommentInputModel model)
         {
+            var project = context.Projects.SingleOrDefault(p => p.Id == id);
+            if (project is null)
+            {
+                return NotFound();
+            }
+
+            var comment = model.ToEntity();
+            context.Comments.Add(comment);
+            context.SaveChanges();
+            
             return Ok();
         }
     }
