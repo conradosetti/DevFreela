@@ -1,6 +1,5 @@
-﻿using DevFreela.API.Entities;
-using DevFreela.API.Models;
-using DevFreela.API.Persistence;
+﻿using DevFreela.Application.Models;
+using DevFreela.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +7,7 @@ namespace DevFreela.API.Controllers
 {
 
     [ApiController]
-    [Route("api/skill")]
+    [Route("api/skills")]
 
     public class SkillsController(DevFreelaDbContext context) : ControllerBase
     {

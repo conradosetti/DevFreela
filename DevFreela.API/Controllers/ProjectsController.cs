@@ -1,138 +1,99 @@
-﻿using DevFreela.API.Models;
-using DevFreela.API.Persistence;
-using DevFreela.API.Services;
+﻿using DevFreela.Application.Models;
+using DevFreela.Application.Services;
+using DevFreela.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
 namespace DevFreela.API.Controllers
 {
-    [Route("api/project")]
+    [Route("api/projects")]
     [ApiController]
-    public class ProjectsController(DevFreelaDbContext context) : ControllerBase
+    public class ProjectsController(IProjectService service) : ControllerBase
     {
         //GET api/projects?search=crm
         [HttpGet]
-        public IActionResult GetAllProjects(string search = "", int page = 0, int pageSize = 3)
+        public IActionResult Get(string search = "")
         {
-            var projects = context.Projects
-                .Include(p=>p.Client)
-                .Include(p=>p.FreeLancer)
-                .Include(p => p.Comments)
-                .Where(p=>!p.IsDeleted && 
-                          (search == "" || p.Title.Contains(search) || p.Description.Contains(search)))
-                .Skip(page * pageSize)
-                .Take(pageSize)
-                .ToList();
-            
-            var model = projects.Select(ProjectItemViewModel.FromEntity).ToList();
-            
-            return Ok(model);
+            var result = service.GetAll(search);
+            return Ok(result);
         }
         //GET api/projects/123
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-            var project = context.Projects
-                .Include(p=>p.Client)
-                .Include(p=>p.FreeLancer)
-                .Include(p => p.Comments)
-                .SingleOrDefault(p => p.Id == id && p.IsDeleted == false);
-            
-            var model = project != null ? ProjectViewModel.FromEntity(project) : null;
-            return Ok(model);
+            var result = service.GetById(id);
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Message);
+            }
+            return Ok(result);
         }
         // POST api/projects
         [HttpPost]
-        public IActionResult Post(CreateProjectInputModel model)
+        public IActionResult Insert(CreateProjectInputModel model)
         {
-            var project = model.ToEntity();
+            var result = service.Insert(model);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Message);
+            }
             
-            context.Projects.Add(project);
-            context.SaveChanges();
             
-            
-            return CreatedAtAction(nameof(GetById), new {id = project.Id}, context.Projects.SingleOrDefault(p => p.Id == project.Id));
+            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result);
+
         }
         
         //PUT api/projects/1234
-        [HttpPut("{id}")]
-        public IActionResult PutProject(int id, UpdateProjectInputModel model)
+        [HttpPut("{id:int}")]
+        public IActionResult Update(int id, UpdateProjectInputModel model)
         {
-            var project = context.Projects.SingleOrDefault(p => p.Id == id);
-            if (project is null)
-            {
-                return NotFound();
-            }
-            project.Update(model.Title, model.Description, model.Cost);
-            context.Projects.Update(project);
-            context.SaveChanges();
+            var result = service.Update(id, model);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+            
             return NoContent();
         }
         
         //DELETE api/projects/1234
         [HttpDelete("{id}")]
-        public IActionResult DeleteProject(int id)
+        public IActionResult Delete(int id)
         {
-            var project = context.Projects.SingleOrDefault(p => p.Id == id);
-            if (project is null)
-            {
-                return NotFound();
-            }
-            project.SetAsDeleted();
-            context.Projects.Update(project);
-            context.SaveChanges();
+            var result = service.Delete(id);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
             
             return NoContent();
         }
         
         //PUT api/projects/start/1234
         [HttpPut("start/{id}")]
-        public IActionResult StartProject(int id)
+        public IActionResult Start(int id)
         {
-            var project = context.Projects.SingleOrDefault(p => p.Id == id);
-            if (project is null)
-            {
-                return NotFound();
-            }
-            project.Start();
-            context.Projects.Update(project);
-            context.SaveChanges();
+            var result = service.Start(id);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
             
             return NoContent();
         }
         
         //PUT api/projects/complete/1234
-        [HttpPut("complete/{id}")]
-        public IActionResult CompleteProject(int id)
+        [HttpPut("complete/{id:int}")]
+        public IActionResult Complete(int id)
         {
-            var project = context.Projects.SingleOrDefault(p => p.Id == id);
-            if (project is null)
-            {
-                return NotFound();
-            }
-            project.Complete();
-            context.Projects.Update(project);
-            context.SaveChanges();
+            var result = service.Complete(id);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
             
             return NoContent();
         }
         
         //PUT api/projects/comments/1234
-        [HttpPut("comment/{id}")]
-        public IActionResult PutComment(int id, CreateProjectCommentInputModel model)
+        [HttpPut("comments/{id}")]
+        public IActionResult InsertComment(int id, CreateProjectCommentInputModel model)
         {
-            var project = context.Projects.SingleOrDefault(p => p.Id == id);
-            if (project is null)
-            {
-                return NotFound();
-            }
-
-            var comment = model.ToEntity();
-            context.Comments.Add(comment);
-            context.SaveChanges();
+            var result = service.InsertComment(id, model);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
             
-            return Ok();
+            return NoContent();
         }
     }
 }

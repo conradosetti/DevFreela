@@ -1,13 +1,13 @@
-﻿using DevFreela.API.Entities;
-using DevFreela.API.Models;
-using DevFreela.API.Persistence;
+﻿using DevFreela.Application.Models;
+using DevFreela.Core.Entities;
+using DevFreela.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.API.Controllers
 {
     [ApiController]
-    [Route("api/user")]
+    [Route("api/users")]
 
     public class UsersController(DevFreelaDbContext context) : ControllerBase
     {
@@ -36,8 +36,8 @@ namespace DevFreela.API.Controllers
             return NoContent(); 
         }
 
-        [HttpPut("{id}/skills")]
-        public IActionResult PutSkill(int id, UserSkillsInputModel model)
+        [HttpPut("{id:int}/skills")]
+        public IActionResult PutSkill(int id, CreateUserSkillsInputModel model)
         {
             var userSkills = model.SkillIds.Select(s=>new UserSkill(id, s)).ToList();
             context.UserSkills.AddRange(userSkills);
@@ -46,7 +46,7 @@ namespace DevFreela.API.Controllers
         }
         
         //PUT api/users
-        [HttpPut("profile-picture/{id}")]
+        [HttpPut("/{id:int}profile-picture")]
         public IActionResult PutProfilePicture(int id, IFormFile file)
         {
             var description = $"File: {file.FileName}, Size: {file.Length}";

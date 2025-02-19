@@ -157,3 +157,9 @@ C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\runtimes\w
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\obj\Debug\net9.0\DevFreela.API.sourcelink.json
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Application.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Core.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Infrastructure.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Application.pdb
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Core.pdb
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Infrastructure.pdb
