@@ -163,3 +163,5 @@ C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Application.pdb
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Core.pdb
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Infrastructure.pdb
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\MediatR.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\MediatR.Contracts.dll
