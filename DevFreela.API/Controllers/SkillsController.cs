@@ -1,7 +1,8 @@
-﻿using DevFreela.Application.Models;
-using DevFreela.Infrastructure.Persistence;
+﻿using DevFreela.Application.Skills.Commands.InsertSkill;
+using DevFreela.Application.Skills.Queries.GetAllSkills;
+using DevFreela.Application.Skills.Queries.GetSkillByIdQuery;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.API.Controllers
 {
@@ -9,36 +10,34 @@ namespace DevFreela.API.Controllers
     [ApiController]
     [Route("api/skills")]
 
-    public class SkillsController(DevFreelaDbContext context) : ControllerBase
+    public class SkillsController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
-        public IActionResult GetAllSkills()
+        public async Task<IActionResult> GetAll()
         {
-            var skills = context.Skills
-                .Where(s=>s.IsDeleted == false)
-                .ToList();
-            var model = skills.Select(AllSkillsViewModel.FromEntity).ToList();
-            return Ok(model);
+            var results = await mediator.Send(new GetAllSkillsQuery());
+            return Ok(results);
         }
         
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var skills = context.Skills
-                .Include(s=>s.UserSkills)
-                .ThenInclude(us=>us.User)
-                .Where(s => s.IsDeleted == false && s.Id == id).ToList();
-            var model = skills.Select(SingleSkillViewModel.FromEntity).ToList();
-            return Ok(model);
+            var result = await mediator.Send(new GetSkillByIdQuery(id));
+            if (!result.IsSuccess)
+                return NotFound(result.Message);
+            
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult Post(CreateSkillInputModel model)
+        public async Task<IActionResult> Post(InsertSkillCommand command)
         {
-            var skill = model.ToEntity();
-            context.Skills.Add(skill);
-            context.SaveChanges();
-            return NoContent();
+            var result = await mediator.Send(command);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Message);
+            }
+            return CreatedAtAction(nameof(GetById), new { id = result.Data }, command);
         }
     }
 }

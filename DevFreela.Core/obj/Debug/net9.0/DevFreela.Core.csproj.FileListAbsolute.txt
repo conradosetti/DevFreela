@@ -1,0 +1,12 @@
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\bin\Debug\net9.0\DevFreela.Core.deps.json
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\bin\Debug\net9.0\DevFreela.Core.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\bin\Debug\net9.0\DevFreela.Core.pdb
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\DevFreela.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\DevFreela.Core.AssemblyInfoInputs.cache
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\DevFreela.Core.AssemblyInfo.cs
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\DevFreela.Core.csproj.CoreCompileInputs.cache
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\DevFreela.Core.sourcelink.json
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\DevFreela.Core.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\refint\DevFreela.Core.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\DevFreela.Core.pdb
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.Core\obj\Debug\net9.0\ref\DevFreela.Core.dll

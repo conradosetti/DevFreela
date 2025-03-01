@@ -1,26 +1,24 @@
-﻿using DevFreela.Application.Commands.CompleteProject;
-using DevFreela.Application.Commands.DeleteProject;
-using DevFreela.Application.Commands.InsertComment;
-using DevFreela.Application.Commands.InsertProject;
-using DevFreela.Application.Commands.StartProject;
-using DevFreela.Application.Commands.UpdateProject;
-using DevFreela.Application.Queries.GetAllProjects;
-using DevFreela.Application.Queries.GetProjectById;
-using DevFreela.Application.Services;
+﻿using DevFreela.Application.Projects.Commands.CompleteProject;
+using DevFreela.Application.Projects.Commands.DeleteProject;
+using DevFreela.Application.Projects.Commands.InsertComment;
+using DevFreela.Application.Projects.Commands.InsertProject;
+using DevFreela.Application.Projects.Commands.StartProject;
+using DevFreela.Application.Projects.Commands.UpdateProject;
+using DevFreela.Application.Projects.Queries.GetAllProjects;
+using DevFreela.Application.Projects.Queries.GetProjectById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 namespace DevFreela.API.Controllers
 {
     [Route("api/projects")]
     [ApiController]
-    public class ProjectsController(IProjectService service, IMediator mediator) : ControllerBase
+    public class ProjectsController(IMediator mediator) : ControllerBase
     {
         //GET api/projects?search=crm
         [HttpGet]
-        public async Task<IActionResult> Get([FromBody]string search = "")
+        public async Task<IActionResult> Get(string search = "")
         {
-            //var result = service.GetAll(search);
-            var query = new GetAllProjectsQuery(search);
+            var query = new ListProjects(search);
             var result = await mediator.Send(query);
             return Ok(result);
         }
@@ -67,7 +65,7 @@ namespace DevFreela.API.Controllers
         
         //DELETE api/projects/1234
         [HttpDelete("{id}")]
-        public async Task<IActionResult>  Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             //var result = service.Delete(id);
             var result = await mediator.Send(new DeleteProjectCommand(id));

@@ -1,47 +1,45 @@
-﻿using DevFreela.Application.Models;
-using DevFreela.Core.Entities;
-using DevFreela.Infrastructure.Persistence;
+﻿using DevFreela.Application.Users.Commands.InsertUser;
+using DevFreela.Application.Users.Commands.UpdateSkillList;
+using DevFreela.Application.Users.Queries.GetUserById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.API.Controllers
 {
     [ApiController]
     [Route("api/users")]
 
-    public class UsersController(DevFreelaDbContext context) : ControllerBase
+    public class UsersController(IMediator mediator) : ControllerBase
     {
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var user = context.Users
-                .Include(u=>u.UserSkills)
-                .ThenInclude(us=>us.Skill)
-                .FirstOrDefault(u => u.Id == id && !u.IsDeleted);
-            if (user == null)
+            var result = await mediator.Send(new GetUserByIdQuery(id));
+            if (!result.IsSuccess)
             {
                 return NotFound();
             }
-
-            var model = SingleUserViewModel.FromEntity(user);
-            return Ok(model);
+            return Ok(result);
         }
         // POST api/users
         [HttpPost]
-        public IActionResult Post(CreateUserInputModel model)
+        public async Task<IActionResult> Post(InsertUserCommand command)
         {
-            var user = model.ToEntity();
-            context.Users.Add(user);
-            context.SaveChanges();
-            return NoContent(); 
+            var result = await mediator.Send(command);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+            
+            return CreatedAtAction(nameof(GetById), new { id = result.Data }, command);
         }
 
         [HttpPut("{id:int}/skills")]
-        public IActionResult PutSkill(int id, CreateUserSkillsInputModel model)
+        public async  Task<IActionResult> PutSkill(int id, UpdateSkillListCommand command)
         {
-            var userSkills = model.SkillIds.Select(s=>new UserSkill(id, s)).ToList();
-            context.UserSkills.AddRange(userSkills);
-            context.SaveChanges();
+            var result = await mediator.Send(command);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Message);
+            }
             return NoContent();
         }
         
