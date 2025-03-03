@@ -1,5 +1,5 @@
 ﻿using DevFreela.Core.Entities;
-using DevFreela.Core.Respositories;
+using DevFreela.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.Infrastructure.Persistence.Repositories;

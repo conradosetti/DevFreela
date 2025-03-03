@@ -1,6 +1,6 @@
 ﻿using DevFreela.Core.Entities;
 
-namespace DevFreela.Core.Respositories;
+namespace DevFreela.Core.Repositories;
 
 public interface IUserRepository
 {

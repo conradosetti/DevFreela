@@ -1,6 +1,6 @@
 ﻿using DevFreela.Application.Models;
 using DevFreela.Application.Skills.Models;
-using DevFreela.Core.Respositories;
+using DevFreela.Core.Repositories;
 using MediatR;
 
 namespace DevFreela.Application.Skills.Queries.GetSkillByIdQuery;

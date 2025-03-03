@@ -1,5 +1,5 @@
 ﻿using DevFreela.Application.Models;
-using DevFreela.Core.Respositories;
+using DevFreela.Core.Repositories;
 using MediatR;
 
 namespace DevFreela.Application.Projects.Commands.CompleteProject;

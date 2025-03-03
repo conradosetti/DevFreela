@@ -1,6 +1,6 @@
 ﻿using DevFreela.Application.Models;
 using DevFreela.Core.Entities;
-using DevFreela.Core.Respositories;
+using DevFreela.Core.Repositories;
 using MediatR;
 
 namespace DevFreela.Application.Users.Commands.UpdateSkillList;

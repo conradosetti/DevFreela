@@ -1,6 +1,6 @@
 ﻿using DevFreela.Application.Models;
 using DevFreela.Application.Users.Models;
-using DevFreela.Core.Respositories;
+using DevFreela.Core.Repositories;
 using MediatR;
 
 namespace DevFreela.Application.Users.Queries.GetUserById;
