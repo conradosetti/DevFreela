@@ -165,3 +165,6 @@ C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\DevFreela.Infrastructure.pdb
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\MediatR.dll
 C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\MediatR.Contracts.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\FluentValidation.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\FluentValidation.AspNetCore.dll
+C:\Users\conra\RiderProjects\DevFreela\DevFreela.API\bin\Debug\net9.0\FluentValidation.DependencyInjectionExtensions.dll
